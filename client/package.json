@@ -1,0 +1,13 @@
+{
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^7.3.1",
+    "xterm": "^4.8.1"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  },
+  "scripts": {
+    "dev": "npx parcel index.html"
+  }
+}
