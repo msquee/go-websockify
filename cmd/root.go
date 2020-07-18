@@ -2,16 +2,17 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 
-	"github.com/spf13/cobra"
-
 	homedir "github.com/mitchellh/go-homedir"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
 var daemonize bool
+var logFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -24,8 +25,23 @@ var rootCmd = &cobra.Command{
 		if daemonize {
 			//Daemonize
 		}
+		if logFile != "" {
+			//Check if logFile exists
+
+			//"Something like this?"
+			file, err := os.OpenFile(logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+			if err != nil {
+				log.Fatalf("error opening file: %v", err)
+			}
+			defer file.Close()
+
+			log.SetOutput(file)
+			log.Println("This is a test log entry")
+
+		}
 		//Start web server and everything here
-		fmt.Println("Hello CLI")
+		log.Println("Hello CLI")
+		//StartWebSockify()
 	},
 }
 
@@ -53,6 +69,7 @@ func init() {
 
 	//Local  Flags
 	rootCmd.Flags().BoolVarP(&daemonize, "daemonize", "D", false, "Websockify runs in the background as a daemon process.")
+	rootCmd.Flags().StringVarP(&logFile, "log-file", "", "", "File to log to.")
 
 }
 

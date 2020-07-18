@@ -7,6 +7,7 @@ import (
 
 	"./cmd"
 
+	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 )
 
@@ -26,12 +27,19 @@ func init() {
 
 func main() {
 	cmd.Execute()
-	/*
-		router := mux.NewRouter()
-		router.HandleFunc("/ws", webSocketHandler)
-		http.Handle("/", router)
-		log.Fatal(http.ListenAndServe("localhost:8080", nil))
-	*/
+	log.Println("ASDAJSDLAJSDSAD")
+	//startWebSockify()
+}
+
+/*
+	StartWebSockify set up config
+*/
+func startWebSockify() {
+	log.Println("Starting")
+	router := mux.NewRouter()
+	router.HandleFunc("/ws", webSocketHandler)
+	http.Handle("/", router)
+	log.Fatal(http.ListenAndServe("localhost:8080", nil))
 }
 
 /*
