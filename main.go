@@ -5,7 +5,8 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/gorilla/mux"
+	"./cmd"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -24,10 +25,13 @@ func init() {
 }
 
 func main() {
-	router := mux.NewRouter()
-	router.HandleFunc("/ws", webSocketHandler)
-	http.Handle("/", router)
-	log.Fatal(http.ListenAndServe("localhost:8080", nil))
+	cmd.Execute()
+	/*
+		router := mux.NewRouter()
+		router.HandleFunc("/ws", webSocketHandler)
+		http.Handle("/", router)
+		log.Fatal(http.ListenAndServe("localhost:8080", nil))
+	*/
 }
 
 /*
