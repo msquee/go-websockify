@@ -24,6 +24,9 @@ func init() {
 }
 
 func main() {
+	args := []string{"test.js"}
+	WrapProcess("node", args)
+
 	router := mux.NewRouter()
 	router.HandleFunc("/ws", webSocketHandler)
 	http.Handle("/", router)
