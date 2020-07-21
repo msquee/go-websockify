@@ -85,6 +85,7 @@ func (proxyServer *ProxyServer) webSocketToTCP() {
 		if err != nil {
 			proxyServer.wsConn.Close()
 			proxyServer.tcpConn.Close()
+			proxyServer = &ProxyServer{}
 			break
 		}
 
