@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net"
 	"net/http"
@@ -12,26 +13,36 @@ import (
 
 var (
 	upgrader = websocket.Upgrader{
-		ReadBufferSize:    65536,
-		WriteBufferSize:   65536,
-		CheckOrigin:       authenticateOrigin,
-		EnableCompression: true,
+		ReadBufferSize:  65536,
+		WriteBufferSize: 65536,
+		CheckOrigin:     authenticateOrigin,
 	}
-	proxyServer *ProxyServer
+	proxyServer   *ProxyServer
+	ctx, stopHTTP = context.WithTimeout(context.Background(), time.Second)
+	server        = &http.Server{}
 )
 
 func StartHTTP() {
-	server := &http.Server{
+	defer stopHTTP()
+
+	router := mux.NewRouter()
+	router.HandleFunc("/ws", webSocketHandler)
+
+	server = &http.Server{
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
 		IdleTimeout:       60 * time.Second,
 		Addr:              "localhost:8080",
+		Handler:           router,
 	}
-	router := mux.NewRouter()
-	router.HandleFunc("/ws", webSocketHandler)
-	http.Handle("/", router)
+
+	log.Println("Listening at address 127.0.0.1:8080")
 	log.Fatal(server.ListenAndServe())
+
+	if ctx.Err() != nil {
+		log.Fatalln(ctx.Err())
+	}
 }
 
 /*
