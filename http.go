@@ -22,22 +22,27 @@ var (
 	server        = &http.Server{}
 )
 
-func StartHTTP() {
+//StartHTTP
+func StartHTTP(bindAddress string) {
 	defer stopHTTP()
 
 	router := mux.NewRouter()
 	router.HandleFunc("/ws", webSocketHandler)
 
+	//If user didnt provide --bind-addr flag
+	if bindAddress == ""{
+		bindAddress = "localhost:8080"
+	}
 	server = &http.Server{
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
 		IdleTimeout:       60 * time.Second,
-		Addr:              "localhost:8080",
+		Addr:              bindAddress,
 		Handler:           router,
 	}
 
-	log.Println("Listening at address 127.0.0.1:8080")
+	log.Println("Listening at address", bindAddress)
 	log.Fatal(server.ListenAndServe())
 
 	if ctx.Err() != nil {
