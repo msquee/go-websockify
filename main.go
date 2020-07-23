@@ -10,9 +10,13 @@ import (
 )
 
 var (
-	runAsDaemon bool
-	bindAddr    string
-	remoteAddr  string
+	bindAddr   string
+	remoteAddr string
+
+	runAsDaemon   bool
+	showVersion   bool
+	versionString string
+	buildTime     string
 
 	daemonContext daemon.Context
 )
@@ -20,11 +24,11 @@ var (
 func init() {
 	SetupInterruptHandler()
 
-	rootCmd.PersistentFlags().StringVar(&bindAddr, "bind-addr", "localhost:8080", "Bind address")
-	rootCmd.PersistentFlags().StringVar(&remoteAddr, "remote-addr", ":3000", "Remote address")
-	rootCmd.PersistentFlags().BoolVarP(&runAsDaemon, "daemon", "D", false, "Run Go WebSockify as daemon")
+	rootCmd.PersistentFlags().StringVar(&bindAddr, "bind-addr", "0.0.0.0:8080", "bind address")
+	rootCmd.PersistentFlags().StringVar(&remoteAddr, "remote-addr", "127.0.0.1:3000", "remote address")
 
-	rootCmd.MarkPersistentFlagRequired("remote-addr")
+	rootCmd.Flags().BoolVarP(&runAsDaemon, "daemon", "D", false, "run Go WebSockify as daemon")
+	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "print Go WebSockify version")
 }
 
 func main() {
@@ -33,7 +37,7 @@ func main() {
 
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		log.Fatalln(err)
+		os.Exit(1)
 	}
 }
 
@@ -42,6 +46,11 @@ var rootCmd = &cobra.Command{
 	Use:              "go-websockify",
 	Long:             `Starts a WebSocket server which facilitates a bidirectional communications channel. Endpoints are responsible for implementing their own transport layer, Go WebSockify's only job is to move buffers from point A to B.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if showVersion {
+			fmt.Println(fmt.Sprintf("Go WebSockify version %s built on %s", versionString, buildTime))
+			os.Exit(0)
+		}
+
 		log.Println("Starting Go WebSockify")
 
 		if runAsDaemon {
