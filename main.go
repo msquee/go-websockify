@@ -10,14 +10,21 @@ import (
 )
 
 var (
-	runAsDaemon   bool
+	runAsDaemon bool
+	bindAddr    string
+	remoteAddr  string
+
 	daemonContext daemon.Context
 )
 
 func init() {
 	SetupInterruptHandler()
 
-	rootCmd.PersistentFlags().BoolVarP(&runAsDaemon, "daemon", "D", false, "run Go WebSockify as daemon")
+	rootCmd.PersistentFlags().StringVar(&bindAddr, "bind-addr", "localhost:8080", "Bind address")
+	rootCmd.PersistentFlags().StringVar(&remoteAddr, "remote-addr", ":3000", "Remote address")
+	rootCmd.PersistentFlags().BoolVarP(&runAsDaemon, "daemon", "D", false, "Run Go WebSockify as daemon")
+
+	rootCmd.MarkPersistentFlagRequired("remote-addr")
 }
 
 func main() {
@@ -31,12 +38,15 @@ func Execute() {
 }
 
 var rootCmd = &cobra.Command{
-	Use:  "go-websockify",
-	Long: `Starts a WebSocket server which facilitates a bidirectional communications channel. Endpoints are responsible for implementing their own transport layer, Go WebSockify's only job is to move buffers from point A to B.`,
+	TraverseChildren: true,
+	Use:              "go-websockify",
+	Long:             `Starts a WebSocket server which facilitates a bidirectional communications channel. Endpoints are responsible for implementing their own transport layer, Go WebSockify's only job is to move buffers from point A to B.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("Starting Go WebSockify")
 
 		if runAsDaemon {
+			log.Println("Running Go WebSockify as daemon")
+
 			daemonContext := &daemon.Context{
 				PidFileName: "go-websockify.pid",
 				PidFilePerm: 0644,
@@ -52,7 +62,7 @@ var rootCmd = &cobra.Command{
 			}
 			defer daemonContext.Release()
 
-			daemonMessage := fmt.Sprintf("Running Go WebSockify daemon under PID %d", os.Getpid())
+			daemonMessage := fmt.Sprintf("Daemon running under PID %d", os.Getpid())
 			log.Println(daemonMessage)
 		}
 		StartHTTP()

@@ -1,7 +1,7 @@
 const { Terminal } = require("xterm")
 import "~node_modules/xterm/css/xterm.css"
 
-const ws = new WebSocket('ws://localhost:8080/ws')
+const ws = new WebSocket('ws://localhost:8080/ws', ['binary'])
 
 const term = new Terminal()
 term.open(document.getElementById('terminal'))
