@@ -17,7 +17,7 @@ var (
 		ReadBufferSize:  65536,
 		WriteBufferSize: 65536,
 		CheckOrigin:     authenticateOrigin,
-		Subprotocols:    []string{"binary"},
+		Subprotocols:    []string{"binary", "base64"},
 	}
 	proxyServer   *ProxyServer
 	ctx, stopHTTP = context.WithTimeout(context.Background(), time.Second)

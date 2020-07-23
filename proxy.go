@@ -68,6 +68,7 @@ func (proxyServer *ProxyServer) tcpToWebSocket() {
 		n, err := proxyServer.tcpConn.Read(buffer)
 		if err != nil {
 			proxyServer.tcpConn.Close()
+			proxyServer.wsConn.Close()
 			break
 		}
 
