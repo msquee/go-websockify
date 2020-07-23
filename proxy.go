@@ -27,7 +27,7 @@ func NewWebSocketProxy(wsConn *websocket.Conn, tcpAddr *net.TCPAddr) *ProxyServe
 }
 
 /*
-Start starts the bidirectional communcation channel
+Start the bidirectional communcation channel
 between the WebSocket and the remote conection
 */
 func (proxyServer *ProxyServer) Start() {
@@ -58,10 +58,11 @@ func (proxyServer *ProxyServer) Dial() error {
 }
 
 func (proxyServer *ProxyServer) tcpToWebSocket() {
-	/*
-		Infinitely forward TCP data back to WebSocket
-	*/
 	for {
+		if proxyServer.tcpConn == nil {
+			proxyServer.Dial()
+		}
+
 		buffer := make([]byte, 65536)
 
 		n, err := proxyServer.tcpConn.Read(buffer)
@@ -69,8 +70,6 @@ func (proxyServer *ProxyServer) tcpToWebSocket() {
 			proxyServer.tcpConn.Close()
 			break
 		}
-
-		log.Println(string([]byte(buffer[0:n])))
 
 		err = proxyServer.wsConn.WriteMessage(websocket.BinaryMessage, buffer[0:n])
 		if err != nil {
@@ -84,7 +83,6 @@ func (proxyServer *ProxyServer) webSocketToTCP() {
 		_, data, err := proxyServer.wsConn.ReadMessage()
 		if err != nil {
 			proxyServer.wsConn.Close()
-			proxyServer.tcpConn.Close()
 			break
 		}
 

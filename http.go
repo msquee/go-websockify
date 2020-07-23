@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -16,6 +17,7 @@ var (
 		ReadBufferSize:  65536,
 		WriteBufferSize: 65536,
 		CheckOrigin:     authenticateOrigin,
+		Subprotocols:    []string{"binary"},
 	}
 	proxyServer   *ProxyServer
 	ctx, stopHTTP = context.WithTimeout(context.Background(), time.Second)
@@ -33,11 +35,12 @@ func StartHTTP() {
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
 		IdleTimeout:       60 * time.Second,
-		Addr:              "localhost:8080",
+		Addr:              bindAddr,
 		Handler:           router,
 	}
 
-	log.Println("Listening at address 127.0.0.1:8080")
+	listening := fmt.Sprintf("Listening at address %s", bindAddr)
+	log.Println(listening)
 	log.Fatal(server.ListenAndServe())
 
 	if ctx.Err() != nil {
@@ -61,7 +64,14 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tcpAddr, err := net.ResolveTCPAddr("tcp", string("localhost:1000"))
+	host, port, err := net.SplitHostPort(remoteAddr)
+	if err != nil {
+		log.Println("Failed to parse remote address")
+		return
+	}
+	addr := fmt.Sprintf("%s:%s", host, port)
+
+	tcpAddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
 		message := "Failed to resolve destination: " + err.Error()
 		log.Println(message)
