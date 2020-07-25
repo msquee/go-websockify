@@ -6,11 +6,8 @@ import (
 	"os/signal"
 )
 
-var (
-	signals = make(chan os.Signal, 1)
-)
-
 func SetupInterruptHandler() {
+	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt)
 
 	go func() {
