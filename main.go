@@ -12,6 +12,7 @@ import (
 var (
 	bindAddr   string
 	remoteAddr string
+	bufferSize int
 
 	runAsDaemon   bool
 	showVersion   bool
@@ -26,16 +27,13 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVar(&bindAddr, "bind-addr", "0.0.0.0:8080", "bind address")
 	rootCmd.PersistentFlags().StringVar(&remoteAddr, "remote-addr", "127.0.0.1:3000", "remote address")
+	rootCmd.PersistentFlags().IntVar(&bufferSize, "buffer", 65536, "buffer size")
 
 	rootCmd.Flags().BoolVarP(&runAsDaemon, "daemon", "D", false, "run Go WebSockify as daemon")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "print Go WebSockify version")
 }
 
 func main() {
-	Execute()
-}
-
-func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
@@ -58,7 +56,9 @@ var rootCmd = &cobra.Command{
 
 			daemonContext := &daemon.Context{
 				PidFileName: "go-websockify.pid",
+				LogFileName: "go-websockify.log",
 				PidFilePerm: 0644,
+				LogFilePerm: 0644,
 			}
 
 			daemon, err := daemonContext.Reborn()
