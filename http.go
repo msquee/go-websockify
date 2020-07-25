@@ -14,10 +14,10 @@ import (
 
 var (
 	upgrader = websocket.Upgrader{
-		ReadBufferSize:  65536,
-		WriteBufferSize: 65536,
+		ReadBufferSize:  bufferSize,
+		WriteBufferSize: bufferSize,
 		CheckOrigin:     authenticateOrigin,
-		Subprotocols:    []string{"binary", "base64"},
+		Subprotocols:    []string{"binary"},
 	}
 	proxyServer   *ProxyServer
 	ctx, stopHTTP = context.WithTimeout(context.Background(), time.Second)
