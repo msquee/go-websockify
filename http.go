@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 )
 
@@ -24,10 +23,13 @@ var (
 	server        = &http.Server{}
 )
 
+/*
+StartHTTP starts the Go WebSockify web server.
+*/
 func StartHTTP() {
 	defer stopHTTP()
 
-	router := mux.NewRouter()
+	router := http.NewServeMux()
 	router.HandleFunc("/ws", webSocketHandler)
 
 	server = &http.Server{
@@ -49,9 +51,8 @@ func StartHTTP() {
 }
 
 /*
-webSocketHandler handles an incoming HTTP upgrade
-request for a WebSocket connection while establishing a
-bidirectional stream to a proxied TCP resource.
+webSocketHandler handles an incoming HTTP upgrade request
+and starts a bidirectional proxy to the remote connection.
 */
 func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("New WebSocket Connection from %s", r.RemoteAddr)
