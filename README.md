@@ -1,7 +1,7 @@
 # Go WebSockify
 > RFC 6455 compliant TCP and Unix socket proxy to WebSockets.
 
-Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.com/novnc/websockify) TCP to WebSocket proxy with improved connection handling. API compatible, drop our binary on your existing systems. Available on Linux, Windows and MacOS.
+Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.com/novnc/websockify) TCP/Unix to WebSocket proxy with improved connection handling. Runs on Linux, Windows and MacOS.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -15,6 +15,9 @@ Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.c
 - [Development](#development)
 - [License](#license)
 
+## Overview
+`TODO`
+
 ## Installation
 `TODO`
 
@@ -25,6 +28,9 @@ Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.c
 `TODO`
 
 ### Building from source
+`TODO`
+
+## Roadmap
 `TODO`
 
 ## Usage
@@ -45,13 +51,10 @@ Flags:
 ```
 
 ## Contributing
-Both pull requests and issues are welcome on [GitHub](https://github.com/msquee/go-websockify). Take a look at [`CONTRIBUTING.md`](https://github.com/msquee/go-websockify/blob/master/CONTRIBUTING.md) to learn more about the coding standards that we enforce for pull requests.
-
-### Roadmap
-`TODO`
+Both pull requests and issues are welcome on [GitHub](https://github.com/msquee/go-websockify). Look at [CONTRIBUTING.md](https://github.com/msquee/go-websockify/blob/master/CONTRIBUTING.md) to learn more about the coding standards that are enforced on pull requests.
 
 ## Development
-Instructions for development are located in [`CONTRIBUTING.md`](https://github.com/msquee/go-websockify/blob/master/CONTRIBUTING.md).
+Instructions for development are located in [CONTRIBUTING.md](https://github.com/msquee/go-websockify/blob/master/CONTRIBUTING.md).
 
 ## License
-This project is licensed under the terms of the [`MIT license`](https://github.com/msquee/go-websockify/blob/master/LICENSE.md).
+This project is licensed under the terms of the [MIT License](https://github.com/msquee/go-websockify/blob/master/LICENSE.md).
