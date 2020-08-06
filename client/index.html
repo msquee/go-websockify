@@ -1,11 +1,36 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Go WebSockify</title>
+    <title>Control Plane - Go WebSockify</title>
+    <link rel="stylesheet" type="text/css" href="app.css">
   </head>
-  <body>
-    <h1>Go WebSockify</h1>
-    <div id="terminal"></div>
-    <button id="sendMessage">Send Message</button>
+  <body class="font-mono">
+    <div class="container mx-auto p-6">
+
+      <h1 class="text-2xl">Go WebSockify</h1>
+      <h2 class="text-xl text-gray-500">Control Plane</h2>
+
+      <div class="divide-y">
+        <div class="text-lg mb-2">
+          <div class="block md:inline-flex">
+            <svg class="h-6 fill-current text-red-700 inline-flex" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M8 7l4-4m0 0l4 4m-4-4v18"></path></svg>
+            <span id="tx">Transmit 0 B</span>
+          </div>
+
+          <div class="block md:inline-flex">
+            <svg class="h-6 fill-current text-green-700 inline-flex" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M16 17l-4 4m0 0l-4-4m4 4V3"></path></svg>
+            <span id="rx">Receive 0 B</span>
+          </div>
+        </div>
+
+        <div class="py-4">
+          <button type="button" class="btn bg-gray-200" id="reconnect">Reconnect</button>
+          <button type="button" class="btn btn-indigo" id="ping">Ping</button>
+          <button type="button" class="btn btn-indigo" id="benchmark">Send 65 kB</button>
+          <div id="terminal" class="py-4 w-auto"></div>
+        </div>
+      </div>
+    </div>
     <script src="app.js"></script>
   </body>
 </html>

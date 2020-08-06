@@ -1,0 +1,29 @@
+@import '~node_modules/xterm/css/xterm.css';
+
+@tailwind base;
+
+@tailwind components;
+
+@font-face {
+  font-family: Iosevka;
+  src: url('fonts/iosevka-sparkle-regular.woff') format('woff'),
+       url('fonts/iosevka-sparkle-regular.ttf') format('opentype');
+}
+
+.btn {
+  @apply py-3 px-4 rounded-md leading-tight font-mono;
+}
+
+.btn:focus {
+  @apply outline-none shadow-outline;
+}
+
+.btn-indigo {
+  @apply text-white bg-indigo-500;
+}
+
+.btn-green {
+  @apply text-white bg-green-600;
+}
+
+@tailwind utilities;

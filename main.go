@@ -7,6 +7,8 @@ import (
 
 	"github.com/sevlyar/go-daemon"
 	"github.com/spf13/cobra"
+
+	"github.com/msquee/go-websockify/util"
 )
 
 var (
@@ -16,6 +18,7 @@ var (
 
 	runAsDaemon   bool
 	showVersion   bool
+	echoServer    bool
 	versionString string
 	buildTime     string
 
@@ -26,8 +29,9 @@ func init() {
 	SetupInterruptHandler()
 
 	rootCmd.PersistentFlags().StringVar(&bindAddr, "bind-addr", "0.0.0.0:8080", "bind address")
-	rootCmd.PersistentFlags().StringVar(&remoteAddr, "remote-addr", "127.0.0.1:3000", "remote address")
+	rootCmd.PersistentFlags().StringVar(&remoteAddr, "remote-addr", "127.0.0.1:1984", "remote address")
 	rootCmd.PersistentFlags().IntVar(&bufferSize, "buffer", 65536, "buffer size")
+	rootCmd.PersistentFlags().BoolVar(&echoServer, "echo", false, "sidecar echo server")
 
 	rootCmd.Flags().BoolVarP(&runAsDaemon, "daemon", "D", false, "run Go WebSockify as daemon")
 	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "print Go WebSockify version")
@@ -42,7 +46,7 @@ func main() {
 var rootCmd = &cobra.Command{
 	TraverseChildren: true,
 	Use:              "go-websockify",
-	Long:             `Starts a WebSocket server which facilitates a bidirectional communications channel. Endpoints are responsible for implementing their own transport layer, Go WebSockify's only job is to move buffers from point A to B.`,
+	Long:             `Starts a TCP/Unix to WebSocket proxy.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if showVersion {
 			fmt.Println(fmt.Sprintf("Go WebSockify version %s built on %s", versionString, buildTime))
@@ -50,6 +54,10 @@ var rootCmd = &cobra.Command{
 		}
 
 		log.Println("Starting Go WebSockify")
+
+		if echoServer {
+			go util.StartEchoTCPServer()
+		}
 
 		if runAsDaemon {
 			log.Println("Running Go WebSockify as daemon")
