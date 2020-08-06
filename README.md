@@ -1,36 +1,32 @@
 # Go WebSockify
 > RFC 6455 compliant TCP and Unix socket proxy to WebSockets.
 
-Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.com/novnc/websockify) TCP to WebSocket proxy with improved connection handling. API compatible, drop our binary on your existing systems. Available on Linux, Windows and MacOS.
+Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.com/novnc/websockify) TCP/Unix to WebSocket proxy with improved connection handling. Runs on Linux, Windows and MacOS.
 
 ## Table of Contents
-- [Overview](#overview)
 - [Installation](#installation)
-  - [Quick installation]()
-  - [Using prebuilt binaries]()
-  - [Building from source]()
+  - [Build from source](#build-from-source)
 - [Usage](#usage)
-- [Contributing](#contributing)
-  - [Roadmap](#roadmap)
 - [Development](#development)
+  - [Dependencies](#dependencies)
+  - [Start development environment](#start-development-environment)
+  - [Development control plane](#development-control-plane)
+  - [Screenshots](#screenshots)
 - [License](#license)
 
 ## Installation
-`TODO`
 
-### Quick installation
-`TODO`
-
-### Using prebuilt images
-`TODO`
-
-### Building from source
-`TODO`
+### Build from source
+```shell
+$ git clone https://github.com/msquee/go-websockify.git
+$ cd go-websockify
+$ make
+```
 
 ## Usage
 ```shell
 $ go-websockify --help
-Starts a WebSocket server which facilitates a bidirectional communications channel. Endpoints are responsible for implementing their own transport layer, Go WebSockify's only job is to move buffers from point A to B.
+Starts a TCP/Unix to WebSocket proxy.
 
 Usage:
   go-websockify [flags]
@@ -39,19 +35,32 @@ Flags:
       --bind-addr string     bind address (default "0.0.0.0:8080")
       --buffer int           buffer size (default 65536)
   -D, --daemon               run Go WebSockify as daemon
+      --echo                 run sidecar echo server
   -h, --help                 help for go-websockify
       --remote-addr string   remote address (default "127.0.0.1:3000")
   -v, --version              print Go WebSockify version
 ```
 
-## Contributing
-Both pull requests and issues are welcome on [GitHub](https://github.com/msquee/go-websockify). Take a look at [`CONTRIBUTING.md`](https://github.com/msquee/go-websockify/blob/master/CONTRIBUTING.md) to learn more about the coding standards that we enforce for pull requests.
-
-### Roadmap
-`TODO`
-
 ## Development
-Instructions for development are located in [`CONTRIBUTING.md`](https://github.com/msquee/go-websockify/blob/master/CONTRIBUTING.md).
+
+### Dependencies
+- [Go 1.14](https://golang.org/doc/devel/release.html#go1.14)
+- [Yarn](https://yarnpkg.com/getting-started/install)
+- [Modd](https://github.com/cortesi/modd)
+
+### Start development environment
+[Modd](https://github.com/cortesi/modd) is used for a seamless development experience and once installed simply run the command `modd` in the root directory of this project to start the development environment.
+
+### Development control plane
+`go-websockify` has a simple control plane for development in `/client` and is available at: http://127.0.0.1:1234 during development. For the frontend to connect you have to pass `--echo` as a command line flag. **This is done for you if you're using Modd.**
+
+### Screenshots
+<img src="screenshots/go-websockify-control-plane.jpg">
+
+> The control plane is not included with binary distributions.
+
+## Contributing
+Both pull requests and issues are welcome on [GitHub](https://github.com/msquee/go-websockify). No set rules for contributing, just keep it clean.
 
 ## License
-This project is licensed under the terms of the [`MIT license`](https://github.com/msquee/go-websockify/blob/master/LICENSE.md).
+This project is licensed under the terms of the [MIT License](https://github.com/msquee/go-websockify/blob/master/LICENSE.md).

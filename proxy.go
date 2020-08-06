@@ -22,7 +22,12 @@ type ProxyServer struct {
 NewWebSocketProxy returns a pointer to a ProxyServer struct
 */
 func NewWebSocketProxy(wsConn *websocket.Conn, tcpAddr *net.TCPAddr) *ProxyServer {
-	proxyServer := ProxyServer{wsConn, tcpAddr, nil}
+	proxyServer := ProxyServer{
+		wsConn,
+		tcpAddr,
+		nil,
+	}
+
 	return &proxyServer
 }
 
@@ -61,14 +66,15 @@ func (proxyServer *ProxyServer) tcpToWebSocket() {
 	buffer := make([]byte, bufferSize)
 
 	for {
-		n, err := proxyServer.tcpConn.Read(buffer)
+		bytesRead, err := proxyServer.tcpConn.Read(buffer)
+
 		if err != nil {
 			proxyServer.tcpConn.Close()
 			proxyServer.wsConn.Close()
-			break
+			return
 		}
 
-		err = proxyServer.wsConn.WriteMessage(websocket.BinaryMessage, buffer[:n])
+		err = proxyServer.wsConn.WriteMessage(websocket.BinaryMessage, buffer[:bytesRead])
 		if err != nil {
 			log.Println("tcpToWebSocket:", err.Error())
 		}
