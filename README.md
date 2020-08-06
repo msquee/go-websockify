@@ -12,6 +12,7 @@ Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.c
   - [Start development environment](#start-development-environment)
   - [Development control plane](#development-control-plane)
   - [Screenshots](#screenshots)
+- [Contributing](#contributing)
 - [License](#license)
 
 ## Installation
