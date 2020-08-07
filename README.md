@@ -9,8 +9,8 @@ Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.c
 - [Usage](#usage)
 - [Development](#development)
   - [Dependencies](#dependencies)
-  - [Start development environment](#start-development-environment)
-  - [Development control plane](#development-control-plane)
+  - [Development environment](#development-environment)
+  - [Control plane](#control-plane)
   - [Screenshots](#screenshots)
 - [Contributing](#contributing)
 - [License](#license)
@@ -49,16 +49,24 @@ Flags:
 - [Yarn](https://yarnpkg.com/getting-started/install)
 - [Modd](https://github.com/cortesi/modd)
 
-### Start development environment
+### Development environment
 [Modd](https://github.com/cortesi/modd) is used for a seamless development experience and once installed simply run the command `modd` in the root directory of this project to start the development environment.
 
-### Development control plane
-`go-websockify` has a simple control plane for development in `/client` and is available at: http://127.0.0.1:1234 during development. For the frontend to connect you have to pass `--echo` as a command line flag. **This is done for you if you're using Modd.**
+### Control plane
+`go-websockify` has a simple JavaScript based frontend control plane for development and is available at http://127.0.0.1:1234.
+
+```shell
+$ cd client
+$ yarn install
+$ yarn dev
+```
+
+> For the frontend to automatically connect to Go WebSockify you have to pass `--echo` as a command line flag to `go-websockify`. **This is done for you if you're using Modd.**
 
 ### Screenshots
-<img src="screenshots/go-websockify-control-plane.jpg">
+<img align="center" src="screenshots/go-websockify-control-plane.jpg">
 
-> The control plane is not included with binary distributions.
+> The development control plane is not included with binary distributions.
 
 ## Contributing
 Both pull requests and issues are welcome on [GitHub](https://github.com/msquee/go-websockify). No set rules for contributing, just keep it clean.
