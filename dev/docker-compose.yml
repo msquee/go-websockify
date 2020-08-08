@@ -1,0 +1,42 @@
+version: '3.7'
+
+networks:
+  lan:
+
+volumes:
+  data: {}
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    links:
+      - grafana
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    ports:
+      - "9090:9090"
+    expose:
+      - 9090
+    networks:
+      - lan
+
+  grafana:
+    image: grafana/grafana:latest
+    networks:
+      - lan
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+  
+  go-websockify:
+    build: ./app
+    ports:
+      - "8080:8080"
+    expose:
+      - 8080
+    networks:
+      - lan

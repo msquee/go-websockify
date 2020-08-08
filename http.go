@@ -9,6 +9,9 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -21,7 +24,17 @@ var (
 	proxyServer   *ProxyServer
 	ctx, stopHTTP = context.WithTimeout(context.Background(), time.Second)
 	server        = &http.Server{}
+	wsConnCounter = prometheus.NewGauge(
+		prometheus.GaugeOpts{
+			Namespace: "net",
+			Name:      "websocket_connections_active",
+			Help:      "Active WebSocket connections",
+		})
 )
+
+func init() {
+	prometheus.MustRegister(wsConnCounter)
+}
 
 /*
 StartHTTP starts the Go WebSockify web server.
@@ -30,6 +43,11 @@ func StartHTTP() {
 	defer stopHTTP()
 
 	router := http.NewServeMux()
+	router.Handle("/metrics", promhttp.HandlerFor(
+		prometheus.DefaultGatherer,
+		promhttp.HandlerOpts{},
+	))
+
 	router.HandleFunc("/ws", webSocketHandler)
 
 	server = &http.Server{
@@ -65,6 +83,8 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	wsConnCounter.Inc()
+
 	host, port, err := net.SplitHostPort(remoteAddr)
 	if err != nil {
 		log.Println("Failed to parse remote address")
@@ -81,10 +101,11 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	proxyServer = NewWebSocketProxy(wsConn, tcpAddr)
-	err = proxyServer.Dial()
-	if err != nil {
+
+	if err := proxyServer.Dial(); err != nil {
 		log.Println(err)
 		return
 	}
+
 	go proxyServer.Start()
 }
