@@ -24,17 +24,7 @@ var (
 	proxyServer   *ProxyServer
 	ctx, stopHTTP = context.WithTimeout(context.Background(), time.Second)
 	server        = &http.Server{}
-	wsConnCounter = prometheus.NewGauge(
-		prometheus.GaugeOpts{
-			Namespace: "net",
-			Name:      "websocket_connections_active",
-			Help:      "Active WebSocket connections",
-		})
 )
-
-func init() {
-	prometheus.MustRegister(wsConnCounter)
-}
 
 /*
 StartHTTP starts the Go WebSockify web server.

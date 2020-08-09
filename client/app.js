@@ -4,7 +4,6 @@ import fontfaceobserver from 'fontfaceobserver'
 const prettyBytes = require('pretty-bytes')
 
 new fontfaceobserver('Iosevka').load().then(() => {
-  terminal.loadAddon(fitAddon)
   terminal.open(document.getElementById('terminal'))
   fitAddon.fit()
 })
@@ -13,7 +12,7 @@ const terminal = new Terminal({
   fontSize: 16,
   fontFamily: 'Iosevka',
   letterSpacing: 0,
-})
+}) 
 const fitAddon = new FitAddon()
 
 const WS_URL = 'ws://localhost:8080/ws'

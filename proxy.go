@@ -6,29 +6,7 @@ import (
 	"net"
 
 	"github.com/gorilla/websocket"
-	"github.com/prometheus/client_golang/prometheus"
 )
-
-var (
-	bytesTx = prometheus.NewCounter(
-		prometheus.CounterOpts{
-			Namespace: "net",
-			Name:      "websocket_bytes_tx_total",
-			Help:      "byets sent to tcp",
-		})
-
-	bytesRx = prometheus.NewCounter(
-		prometheus.CounterOpts{
-			Namespace: "net",
-			Name:      "websocket_bytes_rx_total",
-			Help:      "bytes received from tcp",
-		})
-)
-
-func init() {
-	prometheus.MustRegister(bytesTx)
-	prometheus.MustRegister(bytesRx)
-}
 
 /*
 ProxyServer holds state information about the connection
@@ -77,6 +55,7 @@ func (proxyServer *ProxyServer) Dial() error {
 	}
 
 	proxyServer.tcpConn = tcpConn
+	tcpConnCounter.Inc()
 
 	success := fmt.Sprintf("WebSocket %s connected to %v:%d", proxyServer.wsConn.RemoteAddr(), proxyServer.tcpAddr.IP, proxyServer.tcpAddr.Port)
 	log.Println(success)
@@ -93,7 +72,11 @@ func (proxyServer *ProxyServer) tcpToWebSocket() {
 		if err != nil {
 			proxyServer.tcpConn.Close()
 			proxyServer.wsConn.Close()
-			return
+
+			tcpConnCounter.Dec()
+			wsConnCounter.Dec()
+
+			break
 		}
 
 		bytesRx.Add(float64(bytesRead))
@@ -110,6 +93,10 @@ func (proxyServer *ProxyServer) webSocketToTCP() {
 		_, data, err := proxyServer.wsConn.ReadMessage()
 		if err != nil {
 			proxyServer.wsConn.Close()
+
+			tcpConnCounter.Dec()
+			wsConnCounter.Dec()
+
 			break
 		}
 
