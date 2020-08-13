@@ -79,12 +79,12 @@ func (proxyServer *ProxyServer) tcpToWebSocket() {
 			break
 		}
 
-		bytesRx.Add(float64(bytesRead))
-
 		err = proxyServer.wsConn.WriteMessage(websocket.BinaryMessage, buffer[:bytesRead])
 		if err != nil {
 			log.Println("tcpToWebSocket:", err.Error())
 		}
+
+		bytesTx.Add(float64(bytesRead))
 	}
 }
 
@@ -107,6 +107,6 @@ func (proxyServer *ProxyServer) webSocketToTCP() {
 			proxyServer.tcpConn.Write(data)
 		}
 
-		bytesTx.Add(float64(len(data)))
+		bytesRx.Add(float64(len(data)))
 	}
 }

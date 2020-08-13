@@ -7,25 +7,28 @@ import (
 var (
 	bytesTx = prometheus.NewCounter(
 		prometheus.CounterOpts{
-			Namespace: "net",
+			Namespace: "go_websockify",
 			Name:      "websocket_bytes_tx_total",
-			Help:      "byets sent to tcp",
-		})
+		},
+	)
+
 	bytesRx = prometheus.NewCounter(
 		prometheus.CounterOpts{
-			Namespace: "net",
+			Namespace: "go_websockify",
 			Name:      "websocket_bytes_rx_total",
-			Help:      "bytes received from tcp",
-		})
+		},
+	)
+
 	wsConnCounter = prometheus.NewGauge(
 		prometheus.GaugeOpts{
-			Namespace: "net",
+			Namespace: "go_websockify",
 			Name:      "websocket_connections_active",
 			Help:      "Active WebSocket connections",
 		})
+
 	tcpConnCounter = prometheus.NewGauge(
 		prometheus.GaugeOpts{
-			Namespace: "net",
+			Namespace: "go_websockify",
 			Name:      "tcp_connections_active",
 			Help:      "Active TCP connections",
 		})

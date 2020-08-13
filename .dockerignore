@@ -1,0 +1,4 @@
+client/
+.docker/
+screenshots/
+bin/
