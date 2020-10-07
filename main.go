@@ -46,7 +46,7 @@ func main() {
 var rootCmd = &cobra.Command{
 	TraverseChildren: true,
 	Use:              "go-websockify",
-	Long:             `Starts a TCP/Unix to WebSocket proxy.`,
+	Long:             `Starts a TCP to WebSocket proxy.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if showVersion {
 			fmt.Println(fmt.Sprintf("Go WebSockify version %s built on %s", versionString, buildTime))

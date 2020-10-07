@@ -4,7 +4,6 @@ import fontfaceobserver from 'fontfaceobserver'
 const prettyBytes = require('pretty-bytes')
 
 new fontfaceobserver('Iosevka').load().then(() => {
-  terminal.loadAddon(fitAddon)
   terminal.open(document.getElementById('terminal'))
   fitAddon.fit()
 })
@@ -13,7 +12,7 @@ const terminal = new Terminal({
   fontSize: 16,
   fontFamily: 'Iosevka',
   letterSpacing: 0,
-})
+}) 
 const fitAddon = new FitAddon()
 
 const WS_URL = 'ws://localhost:8080/ws'
@@ -38,8 +37,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById('benchmark').addEventListener('click', () => {
     if (ws.readyState == ws.OPEN) {
-      let buf = Buffer.alloc(65536)
-      sendWsMessage(buf)
+      setInterval(function() {
+        let buf = Buffer.alloc(Math.floor(Math.random() * 35325) + 1)
+        sendWsMessage(buf)
+        buf = null
+      }, 1000)
     }
   })
 

@@ -1,0 +1,48 @@
+version: '3.8'
+
+networks:
+  lan:
+
+volumes:
+  data: {}
+
+services:
+  # Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./.docker/prometheus/:/etc/prometheus/
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+    ports:
+      - "9090:9090"
+    expose:
+      - 9090
+    networks:
+      - lan
+
+  # Grafana
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - ./.docker/grafana/:/etc/grafana/
+    command:
+      - "--config=/etc/grafana/grafana.ini"
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+    networks:
+      - lan
+
+  # Go WebSockify
+  go-websockify:
+    build: .
+    command: "--bind-addr 0.0.0.0:8080 --remote-addr 127.0.0.1:1984 --echo"
+    ports:
+      - "8080:8080"
+    expose:
+      - 8080
+    networks:
+      - lan

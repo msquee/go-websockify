@@ -55,6 +55,7 @@ func (proxyServer *ProxyServer) Dial() error {
 	}
 
 	proxyServer.tcpConn = tcpConn
+	tcpConnCounter.Inc()
 
 	success := fmt.Sprintf("WebSocket %s connected to %v:%d", proxyServer.wsConn.RemoteAddr(), proxyServer.tcpAddr.IP, proxyServer.tcpAddr.Port)
 	log.Println(success)
@@ -71,13 +72,19 @@ func (proxyServer *ProxyServer) tcpToWebSocket() {
 		if err != nil {
 			proxyServer.tcpConn.Close()
 			proxyServer.wsConn.Close()
-			return
+
+			tcpConnCounter.Dec()
+			wsConnCounter.Dec()
+
+			break
 		}
 
 		err = proxyServer.wsConn.WriteMessage(websocket.BinaryMessage, buffer[:bytesRead])
 		if err != nil {
 			log.Println("tcpToWebSocket:", err.Error())
 		}
+
+		bytesTx.Add(float64(bytesRead))
 	}
 }
 
@@ -86,6 +93,10 @@ func (proxyServer *ProxyServer) webSocketToTCP() {
 		_, data, err := proxyServer.wsConn.ReadMessage()
 		if err != nil {
 			proxyServer.wsConn.Close()
+
+			tcpConnCounter.Dec()
+			wsConnCounter.Dec()
+
 			break
 		}
 
@@ -95,5 +106,7 @@ func (proxyServer *ProxyServer) webSocketToTCP() {
 			proxyServer.Dial()
 			proxyServer.tcpConn.Write(data)
 		}
+
+		bytesRx.Add(float64(len(data)))
 	}
 }
