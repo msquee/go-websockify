@@ -1,11 +1,13 @@
 # Go WebSockify
-> RFC 6455 compliant TCP and Unix socket proxy to WebSockets.
+> RFC 6455 compliant TCP to WebSocket proxy.
 
-Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.com/novnc/websockify) TCP/Unix to WebSocket proxy with improved connection handling. Runs on Linux, Windows and MacOS.
+Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.com/novnc/websockify) TCP to WebSocket proxy with improved connection handling. Runs on Linux, Windows and MacOS.
 
 ## Table of Contents
 - [Installation](#installation)
   - [Build from source](#build-from-source)
+- [Features](#features)
+- [Use Cases](#use-cases)
 - [Usage](#usage)
 - [Development](#development)
   - [Dependencies](#dependencies)
@@ -14,6 +16,7 @@ Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.c
   - [Docker](#docker)
   - [Screenshots](#screenshots)
 - [Prometheus Metrics](#prometheus-metrics)
+- [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -26,10 +29,18 @@ $ cd go-websockify
 $ make
 ```
 
+## Features
+- Runs in user space.
+- Proxy any TCP connection to a WebSocket connection.
+- `go-websockify` can be ran as a daemon by passing the command line flag `-D` or `--daemon` to run in the background.
+
+## Use Cases
+The most common use case for `go-websockify` is alongside [novnc](https://github.com/novnc) to enable fast virtual desktop experiences in the browser. 
+
 ## Usage
 ```shell
 $ go-websockify --help
-Starts a TCP/Unix to WebSocket proxy.
+Starts a TCP to WebSocket proxy.
 
 Usage:
   go-websockify [flags]
@@ -40,7 +51,7 @@ Flags:
   -D, --daemon               run Go WebSockify as daemon
       --echo                 sidecar echo server
   -h, --help                 help for go-websockify
-      --remote-addr string   remote address (default "127.0.0.1:3000")
+      --remote-addr string   remote address (default "127.0.0.1:1984")
   -v, --version              print Go WebSockify version
 ```
 
@@ -103,6 +114,13 @@ Go WebSockify exports the following Prometheus metrics at `/metrics`:
 - go_websockify_websocket_bytes_rx_total
 - go_websockify_websocket_connections_active
 - go_websockify_tcp_connections_active
+
+## Roadmap
+- [ ] Support TLS on WebSocket connections.
+- [ ] Support authenticating WebSocket connections through a plugin system (https://github.com/traefik/yaegi).
+- [ ] Support for proxying UNIX sockets to WebSockets.
+- [ ] Support backend TCP connection reuse.
+- [ ] Wrapping any program with the `LD_PRELOAD` trick to catch `bind()` system calls. See: https://jvns.ca/blog/2014/11/27/ld-preload-is-super-fun-and-easy/.
 
 ## Contributing
 Both pull requests and issues are welcome on [GitHub](https://github.com/msquee/go-websockify). No set rules for contributing, just keep it clean.
