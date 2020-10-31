@@ -38,7 +38,7 @@ $ make
 The most common use case for `go-websockify` is alongside [novnc](https://github.com/novnc) to enable fast virtual desktop experiences in the browser. 
 
 ## Usage
-```shell
+```
 $ go-websockify --help
 Starts a TCP to WebSocket proxy.
 
@@ -48,11 +48,12 @@ Usage:
 Flags:
       --bind-addr string     bind address (default "0.0.0.0:8080")
       --buffer int           buffer size (default 65536)
-  -D, --daemon               run Go WebSockify as daemon
+  -D, --daemon               run as daemon
       --echo                 sidecar echo server
   -h, --help                 help for go-websockify
+      --path string          url path clients connect to (default "/websockify")
       --remote-addr string   remote address (default "127.0.0.1:1984")
-  -v, --version              print Go WebSockify version
+  -v, --version              print version
 ```
 
 ## Development
