@@ -12,10 +12,10 @@ const terminal = new Terminal({
   fontSize: 16,
   fontFamily: 'Iosevka',
   letterSpacing: 0,
-}) 
+})
 const fitAddon = new FitAddon()
 
-const WS_URL = 'ws://localhost:8080/ws'
+const WS_URL = 'ws://localhost:8080/websockify'
 let closing = false
 
 let ws = new WebSocket(WS_URL, ['binary'])
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById('benchmark').addEventListener('click', () => {
     if (ws.readyState == ws.OPEN) {
-      setInterval(function() {
+      setInterval(function () {
         let buf = Buffer.alloc(Math.floor(Math.random() * 35325) + 1)
         sendWsMessage(buf)
         buf = null

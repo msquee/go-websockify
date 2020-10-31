@@ -38,7 +38,7 @@ func StartHTTP() {
 		promhttp.HandlerOpts{},
 	))
 
-	router.HandleFunc("/ws", webSocketHandler)
+	router.HandleFunc(httpPath, webSocketHandler)
 
 	server = &http.Server{
 		ReadHeaderTimeout: 5 * time.Second,

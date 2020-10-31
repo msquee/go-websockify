@@ -15,6 +15,7 @@ var (
 	bindAddr   string
 	remoteAddr string
 	bufferSize int
+	httpPath   string
 
 	runAsDaemon   bool
 	showVersion   bool
@@ -32,9 +33,10 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&remoteAddr, "remote-addr", "127.0.0.1:1984", "remote address")
 	rootCmd.PersistentFlags().IntVar(&bufferSize, "buffer", 65536, "buffer size")
 	rootCmd.PersistentFlags().BoolVar(&echoServer, "echo", false, "sidecar echo server")
+	rootCmd.PersistentFlags().StringVar(&httpPath, "path", "/websockify", "url path clients connect to")
 
-	rootCmd.Flags().BoolVarP(&runAsDaemon, "daemon", "D", false, "run Go WebSockify as daemon")
-	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "print Go WebSockify version")
+	rootCmd.Flags().BoolVarP(&runAsDaemon, "daemon", "D", false, "run as daemon")
+	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "print version")
 }
 
 func main() {
