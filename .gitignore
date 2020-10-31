@@ -10,3 +10,4 @@ dist/
 .cache/
 *.log
 node_modules/
+.DS_Store
