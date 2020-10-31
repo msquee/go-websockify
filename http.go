@@ -22,7 +22,7 @@ var (
 		Subprotocols:    []string{"binary"},
 	}
 	proxyServer   *ProxyServer
-	ctx, stopHTTP = context.WithTimeout(context.Background(), time.Second)
+	ctx, stopHTTP = context.WithCancel(context.Background())
 	server        = &http.Server{}
 )
 
