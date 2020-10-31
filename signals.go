@@ -6,6 +6,8 @@ import (
 	"os/signal"
 )
 
+// SetupInterruptHandler listens for OS interrupts and shuts down
+// Go WebSockify if an interrupt is received.
 func SetupInterruptHandler() {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt)

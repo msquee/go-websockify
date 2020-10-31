@@ -26,9 +26,7 @@ var (
 	server        = &http.Server{}
 )
 
-/*
-StartHTTP starts the Go WebSockify web server.
-*/
+// StartHTTP starts the Go WebSockify web server.
 func StartHTTP() {
 	defer stopHTTP()
 
@@ -58,10 +56,8 @@ func StartHTTP() {
 	}
 }
 
-/*
-webSocketHandler handles an incoming HTTP upgrade request
-and starts a bidirectional proxy to the remote connection.
-*/
+// webSocketHandler handles an incoming HTTP upgrade request
+// and starts a bidirectional proxy to the remote connection.
 func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("New WebSocket Connection from %s", r.RemoteAddr)
 	log.Println("Attempting to upgrade WebSocket connection")
