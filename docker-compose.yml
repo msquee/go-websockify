@@ -39,7 +39,7 @@ services:
   # Go WebSockify
   go-websockify:
     build: .
-    command: "--bind-addr 0.0.0.0:8080 --remote-addr 127.0.0.1:1984 --echo"
+    command: "--bind-addr 0.0.0.0:8080 --path /websockify --remote-addr 127.0.0.1:1984 --echo"
     ports:
       - "8080:8080"
     expose:
