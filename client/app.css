@@ -7,7 +7,7 @@
 @font-face {
   font-family: Iosevka;
   src: url('fonts/iosevka-sparkle-regular.woff') format('woff'),
-       url('fonts/iosevka-sparkle-regular.ttf') format('opentype');
+    url('fonts/iosevka-sparkle-regular.ttf') format('opentype');
 }
 
 .btn {
@@ -18,12 +18,24 @@
   @apply outline-none shadow-outline;
 }
 
+.btn-gray {
+  @apply bg-gray-200;
+}
+
 .btn-indigo {
   @apply text-white bg-indigo-500;
 }
 
+.btn-indigo:active {
+  @apply bg-indigo-700;
+}
+
 .btn-green {
   @apply text-white bg-green-600;
+}
+
+.btn-green:active {
+  @apply bg-green-700;
 }
 
 @tailwind utilities;

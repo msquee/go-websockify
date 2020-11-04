@@ -10,8 +10,8 @@ new fontfaceobserver('Iosevka').load().then(() => {
 
 const terminal = new Terminal({
   fontSize: 16,
-  fontFamily: 'Iosevka',
-  letterSpacing: 0,
+  fontFamily: 'Iosevka Fixed',
+  letterSpacing: 0.75,
 })
 const fitAddon = new FitAddon()
 

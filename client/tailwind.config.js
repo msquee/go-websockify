@@ -6,6 +6,8 @@ module.exports = {
       mono: ["Iosevka"],
     },
   },
-  variants: {},
+  variants: {
+    backgroundColor: ['responsive', 'hover', 'focus', 'active']
+  },
   plugins: [],
 };
