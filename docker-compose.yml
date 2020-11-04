@@ -35,6 +35,8 @@ services:
       - 3000
     networks:
       - lan
+    depends_on:
+      - prometheus
 
   # Go WebSockify
   go-websockify:
@@ -46,3 +48,20 @@ services:
       - 8080
     networks:
       - lan
+
+  frontend:
+    build: ./client
+    command: yarn run dev
+    volumes:
+      - ./client:/usr/client/
+      - /usr/client/node_modules
+    ports:
+      - "1234:1234" # Parcel
+      - "4321:4321" # HMR
+    expose:
+      - 1234
+      - 4321
+    networks:
+      - lan
+    depends_on:
+      - go-websockify

@@ -16,6 +16,6 @@
     "postcss-preset-env": "^6.7.0"
   },
   "scripts": {
-    "dev": "npx parcel index.html"
+    "dev": "npx parcel index.html --hmr-port 4321"
   }
 }
