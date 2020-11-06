@@ -87,7 +87,7 @@ A batteries included Docker environment is included with this repository to show
 **Docker environment features:**
 - Prometheus
 - Grafana with preconfigured dashboard
-- Go WebSockify
+- Go WebSockify and Control Plane
 - TCP Echo Server
 
 |IP|Description|
