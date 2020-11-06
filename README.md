@@ -68,7 +68,9 @@ Flags:
 [Modd](https://github.com/cortesi/modd) is used for a seamless development experience and once installed simply run the command `modd` in the root directory of this project to start the development environment.
 
 ### Control plane
-`go-websockify` has a simple JavaScript based frontend control plane for development and is available at http://127.0.0.1:1234.
+> You don't need to do this if you use the provided Docker environment.
+
+`go-websockify` has a simple JavaScript based frontend control plane for development and is available at http://127.0.0.1:1234
 
 To start the control plane run:
 ```shell
@@ -77,7 +79,7 @@ $ yarn install
 $ yarn dev
 ```
 
-> For the frontend to automatically connect to Go WebSockify you have to pass `--echo` as a command line flag to `go-websockify`. **This is done for you if you're using Modd.**
+> For the frontend to automatically connect to Go WebSockify you have to pass `--echo` as a command line flag to `go-websockify`. **This is done for you if you're using Docker or Modd.**
 
 ### Docker
 A batteries included Docker environment is included with this repository to show off Go WebSockify in a psuedo production environment.
@@ -90,10 +92,11 @@ A batteries included Docker environment is included with this repository to show
 
 |IP|Description|
 --|--
-|http://127.0.0.1:9090|Prometheus|
-|http://127.0.0.1:3000|Grafana|
+|http://127.0.0.1:1234|Control Plane|
 |http://127.0.0.1:8080|Go WebSockify|
 |http://127.0.0.1:1984|TCP Echo Server|
+|http://127.0.0.1:3000|Grafana|
+|http://127.0.0.1:9090|Prometheus|
 
 To start the Docker environment run:
 ```shell
