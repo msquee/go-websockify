@@ -1,7 +1,11 @@
 @import '~node_modules/xterm/css/xterm.css';
 
-@tailwind base;
+:root {
+  --color-grafana: #F46800;
+  --color-prometheus: #E6522C;
+}
 
+@tailwind base;
 @tailwind components;
 
 @font-face {
@@ -11,7 +15,7 @@
 }
 
 .btn {
-  @apply py-3 px-4 rounded-md leading-tight font-mono;
+  @apply py-3 px-4 rounded-md leading-tight;
 }
 
 .btn:focus {
