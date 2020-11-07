@@ -11,11 +11,11 @@ new fontfaceobserver('Iosevka').load().then(() => {
 const terminal = new Terminal({
   fontSize: 16,
   fontFamily: 'Iosevka',
-  letterSpacing: 0,
+  letterSpacing: 1,
 })
 const fitAddon = new FitAddon()
 
-const WS_URL = 'ws://localhost:8080/websockify'
+const WS_URL = 'ws://127.0.0.1:8080/websockify'
 let closing = false
 
 let ws = new WebSocket(WS_URL, ['binary'])

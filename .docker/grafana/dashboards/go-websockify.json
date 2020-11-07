@@ -164,7 +164,7 @@
       "fieldConfig": {
         "defaults": {
           "custom": {},
-          "displayName": "Test",
+          "displayName": "Active WebSocket Connections",
           "unit": "none"
         },
         "overrides": []
@@ -273,7 +273,7 @@
       "fieldConfig": {
         "defaults": {
           "custom": {},
-          "displayName": "Test",
+          "displayName": "Backend TCP Connections",
           "unit": "none"
         },
         "overrides": []

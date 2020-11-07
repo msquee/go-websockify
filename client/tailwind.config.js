@@ -1,3 +1,5 @@
+const { colors: { ...colors } } = require('tailwindcss/defaultTheme')
+
 module.exports = {
   purge: [],
   theme: {
@@ -5,7 +7,14 @@ module.exports = {
     fontFamily: {
       mono: ["Iosevka"],
     },
+    colors: {
+      grafana: 'var(--color-grafana)',
+      prometheus: 'var(--color-prometheus)',
+      ...colors,
+    },
   },
-  variants: {},
+  variants: {
+    backgroundColor: ['responsive', 'hover', 'focus', 'active']
+  },
   plugins: [],
 };
