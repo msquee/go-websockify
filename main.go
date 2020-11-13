@@ -11,32 +11,32 @@ import (
 	"github.com/msquee/go-websockify/util"
 )
 
-var (
+var config struct {
 	bindAddr   string
 	remoteAddr string
 	bufferSize int
 	httpPath   string
 
-	runAsDaemon   bool
-	showVersion   bool
-	echoServer    bool
+	runAsDaemon bool
+	showVersion bool
+	echoServer  bool
+
 	versionString string
 	buildTime     string
-
-	daemonContext daemon.Context
-)
+}
+var daemonContext daemon.Context
 
 func init() {
 	SetupInterruptHandler()
 
-	rootCmd.PersistentFlags().StringVar(&bindAddr, "bind-addr", "0.0.0.0:8080", "bind address")
-	rootCmd.PersistentFlags().StringVar(&remoteAddr, "remote-addr", "127.0.0.1:1984", "remote address")
-	rootCmd.PersistentFlags().IntVar(&bufferSize, "buffer", 65536, "buffer size")
-	rootCmd.PersistentFlags().BoolVar(&echoServer, "echo", false, "sidecar echo server")
-	rootCmd.PersistentFlags().StringVar(&httpPath, "path", "/websockify", "url path clients connect to")
+	rootCmd.PersistentFlags().StringVar(&config.bindAddr, "bind-addr", "0.0.0.0:8080", "bind address")
+	rootCmd.PersistentFlags().StringVar(&config.remoteAddr, "remote-addr", "127.0.0.1:1984", "remote address")
+	rootCmd.PersistentFlags().IntVar(&config.bufferSize, "buffer", 65536, "buffer size")
+	rootCmd.PersistentFlags().BoolVar(&config.echoServer, "echo", false, "sidecar echo server")
+	rootCmd.PersistentFlags().StringVar(&config.httpPath, "path", "/websockify", "url path clients connect to")
 
-	rootCmd.Flags().BoolVarP(&runAsDaemon, "daemon", "D", false, "run as daemon")
-	rootCmd.Flags().BoolVarP(&showVersion, "version", "v", false, "print version")
+	rootCmd.Flags().BoolVarP(&config.runAsDaemon, "daemon", "D", false, "run as daemon")
+	rootCmd.Flags().BoolVarP(&config.showVersion, "version", "v", false, "print version")
 }
 
 func main() {
@@ -50,18 +50,18 @@ var rootCmd = &cobra.Command{
 	Use:              "go-websockify",
 	Long:             `Starts a TCP to WebSocket proxy.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if showVersion {
-			fmt.Println(fmt.Sprintf("Go WebSockify version %s built on %s", versionString, buildTime))
+		if config.showVersion {
+			fmt.Println(fmt.Sprintf("Go WebSockify version %s built on %s", config.versionString, config.buildTime))
 			os.Exit(0)
 		}
 
 		log.Println("Starting Go WebSockify")
 
-		if echoServer {
+		if config.echoServer {
 			go util.StartEchoTCPServer()
 		}
 
-		if runAsDaemon {
+		if config.runAsDaemon {
 			log.Println("Running Go WebSockify as daemon")
 
 			daemonContext := &daemon.Context{

@@ -56,7 +56,7 @@ func (p *ProxyServer) Dial() error {
 
 // Read from backend TCP connection and write to WebSocket.
 func (p *ProxyServer) readTCP() {
-	buffer := make([]byte, bufferSize)
+	buffer := make([]byte, config.bufferSize)
 
 	for {
 		bytesRead, err := p.tcpConn.Read(buffer)

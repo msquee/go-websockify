@@ -16,8 +16,8 @@ import (
 
 var (
 	upgrader = websocket.Upgrader{
-		ReadBufferSize:  bufferSize,
-		WriteBufferSize: bufferSize,
+		ReadBufferSize:  config.bufferSize,
+		WriteBufferSize: config.bufferSize,
 		CheckOrigin:     authenticateOrigin,
 		Subprotocols:    []string{"binary"},
 	}
@@ -34,18 +34,18 @@ func StartHTTP() {
 		prometheus.DefaultGatherer,
 		promhttp.HandlerOpts{},
 	))
-	router.HandleFunc(httpPath, webSocketHandler)
+	router.HandleFunc(config.httpPath, webSocketHandler)
 
 	server = &http.Server{
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
 		IdleTimeout:       60 * time.Second,
-		Addr:              bindAddr,
+		Addr:              config.bindAddr,
 		Handler:           router,
 	}
 
-	listening := fmt.Sprintf("Listening at address %s", bindAddr)
+	listening := fmt.Sprintf("Listening at address %s", config.bindAddr)
 	log.Println(listening)
 	log.Fatal(server.ListenAndServe())
 
@@ -69,7 +69,7 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	wsConnCounter.Inc()
 
-	host, port, err := net.SplitHostPort(remoteAddr)
+	host, port, err := net.SplitHostPort(config.remoteAddr)
 	if err != nil {
 		log.Println("Failed to parse remote address")
 		return
