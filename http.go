@@ -21,7 +21,6 @@ var (
 		CheckOrigin:     authenticateOrigin,
 		Subprotocols:    []string{"binary"},
 	}
-	proxyServer   *ProxyServer
 	ctx, stopHTTP = context.WithCancel(context.Background())
 	server        = &http.Server{}
 )
@@ -35,7 +34,6 @@ func StartHTTP() {
 		prometheus.DefaultGatherer,
 		promhttp.HandlerOpts{},
 	))
-
 	router.HandleFunc(httpPath, webSocketHandler)
 
 	server = &http.Server{
@@ -86,12 +84,13 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	proxyServer = NewWebSocketProxy(wsConn, tcpAddr)
+	p := new(ProxyServer)
+	p.Initialize(wsConn, tcpAddr)
 
-	if err := proxyServer.Dial(); err != nil {
+	if err := p.Dial(); err != nil {
 		log.Println(err)
 		return
 	}
 
-	go proxyServer.Start()
+	go p.Start()
 }

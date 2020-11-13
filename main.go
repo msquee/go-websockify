@@ -84,6 +84,7 @@ var rootCmd = &cobra.Command{
 			daemonMessage := fmt.Sprintf("Daemon running under PID %d", os.Getpid())
 			log.Println(daemonMessage)
 		}
+
 		StartHTTP()
 	},
 }
