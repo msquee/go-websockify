@@ -84,7 +84,8 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p := new(ProxyServer)
+	var p Proxy
+	p = new(ProxyServer)
 	p.Initialize(wsConn, tcpAddr)
 
 	if err := p.Dial(); err != nil {

@@ -8,6 +8,16 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// Proxy interface
+type Proxy interface {
+	Initialize(*websocket.Conn, *net.TCPAddr) *ProxyServer
+	Start()
+	Dial() error
+	ReadWebSocket()
+	ReadTCP()
+	Teardown()
+}
+
 // ProxyServer holds state information about the connection
 // being proxied.
 type ProxyServer struct {
@@ -27,8 +37,8 @@ func (p *ProxyServer) Initialize(wsConn *websocket.Conn, tcpAddr *net.TCPAddr) *
 // Start the bidirectional communcation channel
 // between the WebSocket and the remote conection.
 func (p *ProxyServer) Start() {
-	go p.readWebSocket()
-	go p.readTCP()
+	go p.ReadWebSocket()
+	go p.ReadTCP()
 }
 
 // Dial is a function of proxyserver struct that
@@ -54,29 +64,9 @@ func (p *ProxyServer) Dial() error {
 	return nil
 }
 
-// Read from backend TCP connection and write to WebSocket.
-func (p *ProxyServer) readTCP() {
-	buffer := make([]byte, config.bufferSize)
-
-	for {
-		bytesRead, err := p.tcpConn.Read(buffer)
-
-		if err != nil {
-			p.Teardown()
-			break
-		}
-
-		if err := p.wsConn.WriteMessage(websocket.BinaryMessage, buffer[:bytesRead]); err != nil {
-			log.Println("tcpToWebSocket:", err.Error())
-			break
-		}
-
-		bytesTx.Add(float64(bytesRead))
-	}
-}
-
-// Read from WebSocket and write to backend TCP connection.
-func (p *ProxyServer) readWebSocket() {
+// ReadWebSocket reads from the WebSocket and
+// writes to the backend TCP connection.
+func (p *ProxyServer) ReadWebSocket() {
 	for {
 		_, data, err := p.wsConn.ReadMessage()
 		if err != nil {
@@ -93,6 +83,28 @@ func (p *ProxyServer) readWebSocket() {
 		}
 
 		bytesRx.Add(float64(len(data)))
+	}
+}
+
+// ReadTCP reads from the backend TCP connection and
+// writes to the WebSocket.
+func (p *ProxyServer) ReadTCP() {
+	buffer := make([]byte, config.bufferSize)
+
+	for {
+		bytesRead, err := p.tcpConn.Read(buffer)
+
+		if err != nil {
+			p.Teardown()
+			break
+		}
+
+		if err := p.wsConn.WriteMessage(websocket.BinaryMessage, buffer[:bytesRead]); err != nil {
+			log.Println("tcpToWebSocket:", err.Error())
+			break
+		}
+
+		bytesTx.Add(float64(bytesRead))
 	}
 }
 
