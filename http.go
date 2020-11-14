@@ -51,6 +51,7 @@ func StartHTTP() {
 
 	if ctx.Err() != nil {
 		log.Fatalln(ctx.Err())
+		return
 	}
 }
 
@@ -63,29 +64,27 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 
 	if err != nil {
-		log.Println("Failed to upgrade websocket request: ", err)
+		log.Println("failed to upgrade websocket request: ", err)
 		return
 	}
-
 	wsConnCounter.Inc()
 
 	host, port, err := net.SplitHostPort(config.remoteAddr)
 	if err != nil {
-		log.Println("Failed to parse remote address")
+		log.Println("failed to parse remote address")
 		return
 	}
 	addr := fmt.Sprintf("%s:%s", host, port)
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
-		message := "Failed to resolve destination: " + err.Error()
+		message := "failed to resolve destination: " + err.Error()
 		log.Println(message)
 		_ = wsConn.WriteMessage(websocket.CloseMessage, []byte(message))
 		return
 	}
 
-	var p Proxy
-	p = new(ProxyServer)
+	var p Proxy = new(ProxyServer)
 	p.Initialize(wsConn, tcpAddr)
 
 	if err := p.Dial(); err != nil {
