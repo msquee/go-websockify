@@ -80,7 +80,7 @@ func (p *ProxyServer) ReadWebSocket() {
 			p.tcpConn.Write(data)
 		}
 
-		bytesRx.Add(float64(len(data)))
+		bytesTx.Add(float64(len(data)))
 	}
 }
 
@@ -102,7 +102,7 @@ func (p *ProxyServer) ReadTCP() {
 			break
 		}
 
-		bytesTx.Add(float64(bytesRead))
+		bytesRx.Add(float64(bytesRead))
 	}
 }
 
