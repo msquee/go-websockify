@@ -13,8 +13,6 @@ type Proxy interface {
 	Initialize(*websocket.Conn, *net.TCPAddr) *ProxyServer
 	Start()
 	Dial() error
-	ReadWebSocket()
-	ReadTCP()
 	Teardown()
 }
 
