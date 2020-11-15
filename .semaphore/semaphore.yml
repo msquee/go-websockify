@@ -16,4 +16,4 @@ blocks:
           - docker-compose up
           - wget http://localhost:1234
       secrets:
-      - name: Docker credentials
+      - name: dockerhub
