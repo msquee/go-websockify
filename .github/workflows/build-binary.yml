@@ -3,14 +3,14 @@ name: Build Binary
 on:
   pull_request:
 
+env:
+  BINARY_NAME: go-websockify
+
 jobs:
   build:
     name: Build binary
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "BINARY_NAME=go-websockify" >> $GITHUB_ENV
-
       - uses: actions/setup-go@v1
         with:
           go-version: '1.15.5'
@@ -33,6 +33,8 @@ jobs:
           echo Running action $GITHUB_ACTION
           make
           upx ./bin/$BINARY_NAME
+        env:
+          BINARY_NAME: ${{ env.BINARY_NAME }}
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
@@ -40,3 +42,5 @@ jobs:
           name: $BINARY_NAME
           path: |
             ./bin/$BINARY_NAME
+        env:
+          BINARY_NAME: ${{ env.BINARY_NAME }}
