@@ -20,11 +20,12 @@ jobs:
         with:
           repository: upx/upx
           path: upx
+          submodules: true
 
       - name: Build UPX
         run: |
           cd upx
-          make all
+          make allP
 
       - name: Build Go WebSockify
         run: |
