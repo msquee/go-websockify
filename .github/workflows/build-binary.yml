@@ -20,7 +20,7 @@ jobs:
         with:
           repository: upx/upx
           path: upx
-          submodules: true
+          submodules: 'recursive'
 
       - name: Build UPX
         run: |
