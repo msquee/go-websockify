@@ -10,8 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          export BINARY_NAME=go-websockify
-          echo "::set-env name=BINARY_NAME::$BINARY_NAME"
+          echo "BINARY_NAME=go-websockify" >> $GITHUB_ENV
 
       - uses: actions/setup-go@v1
         with:
