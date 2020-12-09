@@ -20,7 +20,6 @@ jobs:
         run: |
           echo Running action $GITHUB_ACTION
           make
-        env:
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
