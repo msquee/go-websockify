@@ -1,0 +1,16 @@
+name: Build Docker
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Build Docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+      uses: actions/checkout@v2
+
+      - name: Build the stack
+        run: docker-compose up -d
