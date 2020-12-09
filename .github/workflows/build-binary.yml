@@ -20,11 +20,13 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
-      - name: Checkout and build UPX
+      - name: Checkout UPX
         uses: actions/checkout@v2
         with:
           repository: upx/upx
           path: upx
+
+      - name: Build UPX
         run: |
           make all
 
