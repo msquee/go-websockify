@@ -17,7 +17,7 @@ ARCH=$(call parseArch, ${PLATFORM})
 all: build
 
 build:
-	GOOS=${OS} GOARCH=${ARCH} go build -ldflags="-w -s -X main.versionString=$$(git describe --tags --first-parent --abbrev=6 --long --dirty --always) -X main.buildTime=$(date)" -o ./bin/go-websockify-${OS}-${ARCH}
+	CGO_ENABLED=0 GOOS=${OS} GOARCH=${ARCH} go build -a -ldflags="-w -s -X main.versionString=$$(git describe --tags --first-parent --abbrev=6 --long --dirty --always) -X main.buildTime=$(date)" -o ./bin/go-websockify-${OS}-${ARCH}
 
 clean:
 	rm -rf bin/
