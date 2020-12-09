@@ -1,7 +1,6 @@
 name: Build Binary
 
 on:
-  push:
   pull_request:
 
 jobs:
