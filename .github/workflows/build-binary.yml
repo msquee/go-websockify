@@ -25,7 +25,7 @@ jobs:
       - name: Build UPX
         run: |
           cd upx
-          make allP
+          make all
 
       - name: Build Go WebSockify
         run: |
