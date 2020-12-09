@@ -18,7 +18,17 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
 
-      - name: Check out code into the Go module directory
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Build Go WebSockify
