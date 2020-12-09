@@ -6,8 +6,8 @@
 
 PLATFORM=linux/amd64
 
-parseOS=$(firstword $(subst /, ,$1))
-parseArch=$(or $(word 2,$(subst /, ,$1)),$(value 2))
+parseOS=$(firstword $(subst -, ,$1))
+parseArch=$(or $(word 2,$(subst -, ,$1)),$(value 2))
 
 OS=$(call parseOS, ${PLATFORM})
 ARCH=$(call parseArch, ${PLATFORM})
