@@ -25,6 +25,7 @@ jobs:
     strategy:
       matrix:
         platforms: ['linux-amd64', 'darwin-amd64']
+    needs: build
 
     steps:
       - name: Compress binary with UPX
