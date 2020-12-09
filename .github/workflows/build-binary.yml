@@ -19,13 +19,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: upx/upx
-          ref: v3.9.6
           path: upx
-          fetch-depth: 0
 
       - name: Build UPX
         run: |
-          make all
+          cd upx
+          make distclean
 
       - name: Build Go WebSockify
         run: |
