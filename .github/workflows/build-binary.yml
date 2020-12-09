@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platforms: [ 'linux-amd64', 'osx' ]
-        go: [ '1.15.5', '1.13' ]
+        platforms: [ 'linux-amd64', 'darwin-amd64' ]
+        go: [ '1.15.5' ]
 
     steps:
       - uses: actions/setup-go@v2
@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Go WebSockify
         run: |
-          make build
+          make PLATFORM=${{ matrix.platforms }}
 
       - name: Compress binary with UPX
         run: |
