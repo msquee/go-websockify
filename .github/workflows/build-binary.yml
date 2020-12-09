@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: upx/upx
-          ref: master
+          ref: v3.9.6
           path: upx
 
       - name: Build UPX
