@@ -18,11 +18,22 @@ jobs:
       - name: Build Go WebSockify
         run: |
           make build
-          upx ./bin/go-websockify
+  
+  compress:
+    name: Compress binaries with UPX
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platforms: ['linux-amd64', 'darwin-amd64']
+
+    steps:
+      - name: Compress binary with UPX
+        run: |
+          upx ./bin/go-websockify-${{ matrix.platforms }}
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: go-websockify
+          name: go-websockify-${{ matrix.platforms }}
           path: |
-            ./bin/go-websockify
+            ./bin/go-websockify-${{ matrix.platforms }}
