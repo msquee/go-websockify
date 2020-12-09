@@ -7,7 +7,7 @@ jobs:
   build:
     strategy:
       matrix:
-        platforms: [ 'linux-amd64', 'darwin-amd64' ]
+        platforms: [ 'linux-amd64', 'darwin-amd64', 'arm64-arm64' ]
         go: [ '1.15.5' ]
 
     name: Build ${{ matrix.platforms }}
