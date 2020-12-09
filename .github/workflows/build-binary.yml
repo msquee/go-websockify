@@ -38,7 +38,7 @@ jobs:
 
       - name: Compress binary with UPX
         run: |
-          upx ./bin/go-websockify-${{ matrix.platforms }}
+          upx --ultra-brute ./bin/go-websockify-${{ matrix.platforms }}
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
