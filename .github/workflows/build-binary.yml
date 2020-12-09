@@ -28,19 +28,17 @@ jobs:
         run: |
           make all
 
-      - name: Build
+      - name: Build Go WebSockify
         run: |
-          echo Running action $GITHUB_ACTION
           make
-          upx ./bin/$BINARY_NAME
-        env:
-          BINARY_NAME: ${{ env.BINARY_NAME }}
+
+      - name: Compress binary with UPX
+        run: |
+          upx ./bin/go-websockify
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: $BINARY_NAME
+          name: go-websockify
           path: |
-            ./bin/$BINARY_NAME
-        env:
-          BINARY_NAME: ${{ env.BINARY_NAME }}
+            ./bin/go-websockify
