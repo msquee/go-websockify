@@ -4,7 +4,7 @@
 # make clean
 
 
-PLATFORM=linux/amd64
+PLATFORM=linux-amd64
 
 parseOS=$(firstword $(subst -, ,$1))
 parseArch=$(or $(word 2,$(subst -, ,$1)),$(value 2))
