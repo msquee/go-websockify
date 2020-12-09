@@ -21,6 +21,7 @@ jobs:
           repository: upx/upx
           ref: v3.9.6
           path: upx
+          fetch-depth: 0
 
       - name: Build UPX
         run: |
