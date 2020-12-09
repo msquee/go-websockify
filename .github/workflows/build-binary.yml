@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platforms: [ 'linux-amd64', 'darwin-amd64' ]
+        platforms: [ 'linux-amd64', 'osx' ]
         go: [ '1.15.5', '1.13' ]
 
     steps:
