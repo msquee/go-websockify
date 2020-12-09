@@ -9,6 +9,10 @@ jobs:
     name: Build binary
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          export BINARY_NAME=go-websockify
+          echo "::set-env name=BINARY_NAME::$BINARY_NAME"
+
       - uses: actions/setup-go@v1
         with:
           go-version: '1.15.5'
@@ -16,14 +20,23 @@ jobs:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
 
+      - name: Checkout and build UPX
+        uses: actions/checkout@v2
+        with:
+          repository: upx/upx
+          path: upx
+        run: |
+          make all
+
       - name: Build
         run: |
           echo Running action $GITHUB_ACTION
           make
+          upx ./bin/$BINARY_NAME
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: go-websockify
+          name: $BINARY_NAME
           path: |
-            ./bin/go-websockify
+            ./bin/$BINARY_NAME
