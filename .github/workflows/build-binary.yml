@@ -18,9 +18,6 @@ jobs:
       - name: Build Go WebSockify
         run: |
           make build
-
-      - name: Compress binary with UPX
-        run: |
           upx ./bin/go-websockify
 
       - name: Upload binary
