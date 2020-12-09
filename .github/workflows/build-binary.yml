@@ -5,12 +5,13 @@ on:
 
 jobs:
   build:
-    name: Build
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        platforms: [ 'linux-amd64', 'darwin-amd64' ]
+        platforms: [ 'linux/amd64', 'darwin/amd64' ]
         go: [ '1.15.5' ]
+    
+    name: Build ${{ matrix.platforms }}
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/setup-go@v2
