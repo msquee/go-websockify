@@ -9,7 +9,7 @@ jobs:
       matrix:
         platforms: [ 'linux/amd64', 'darwin/amd64' ]
         go: [ '1.15.5' ]
-    
+
     name: Build ${{ matrix.platforms }}
     runs-on: ubuntu-latest
 
@@ -27,7 +27,7 @@ jobs:
 
       - name: Compress binary with UPX
         run: |
-          upx ./bin/go-websockify-${{ matrix.platforms }}
+          upx ./bin/go-websockify-${${{ matrix.platforms}}///-}
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
