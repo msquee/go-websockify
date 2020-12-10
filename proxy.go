@@ -8,6 +8,14 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// Proxy interface
+type Proxy interface {
+	Initialize(*websocket.Conn, *net.TCPAddr) *ProxyServer
+	Start()
+	Dial() error
+	Teardown()
+}
+
 // ProxyServer holds state information about the connection
 // being proxied.
 type ProxyServer struct {
@@ -16,89 +24,94 @@ type ProxyServer struct {
 	tcpConn *net.TCPConn
 }
 
-// NewWebSocketProxy returns a pointer to a ProxyServer struct.
-func NewWebSocketProxy(wsConn *websocket.Conn, tcpAddr *net.TCPAddr) *ProxyServer {
-	proxyServer := ProxyServer{
-		wsConn,
-		tcpAddr,
-		nil,
-	}
+// Initialize ProxyServer and return struct.
+func (p *ProxyServer) Initialize(wsConn *websocket.Conn, tcpAddr *net.TCPAddr) *ProxyServer {
+	p.wsConn = wsConn
+	p.tcpAddr = tcpAddr
 
-	return &proxyServer
+	return p
 }
 
 // Start the bidirectional communcation channel
 // between the WebSocket and the remote conection.
-func (proxyServer *ProxyServer) Start() {
-	go proxyServer.webSocketToTCP()
-	go proxyServer.tcpToWebSocket()
+func (p *ProxyServer) Start() {
+	go p.ReadWebSocket()
+	go p.ReadTCP()
 }
 
 // Dial is a function of proxyserver struct that
 // instantiates a TCP connection to proxyserver.tcpAddr
-func (proxyServer *ProxyServer) Dial() error {
-	tcpConn, err := net.DialTCP(proxyServer.tcpAddr.Network(), nil, proxyServer.tcpAddr)
+func (p *ProxyServer) Dial() error {
+	tcpConn, err := net.DialTCP(p.tcpAddr.Network(), nil, p.tcpAddr)
 
 	if err != nil {
-		message := "Dialing fail: " + err.Error()
+		message := "dialing fail: " + err.Error()
 		log.Println(message)
-		_ = proxyServer.wsConn.WriteMessage(websocket.TextMessage, []byte(message))
+
+		p.wsConn.WriteMessage(websocket.TextMessage, []byte(message))
+
 		return err
 	}
 
-	proxyServer.tcpConn = tcpConn
+	p.tcpConn = tcpConn
 	tcpConnCounter.Inc()
 
-	success := fmt.Sprintf("WebSocket %s connected to %v:%d", proxyServer.wsConn.RemoteAddr(), proxyServer.tcpAddr.IP, proxyServer.tcpAddr.Port)
+	success := fmt.Sprintf("WebSocket %s connected to %+v:%d", p.wsConn.RemoteAddr(), p.tcpAddr.IP, p.tcpAddr.Port)
 	log.Println(success)
 
 	return nil
 }
 
-func (proxyServer *ProxyServer) tcpToWebSocket() {
-	buffer := make([]byte, bufferSize)
-
+// ReadWebSocket reads from the WebSocket and
+// writes to the backend TCP connection.
+func (p *ProxyServer) ReadWebSocket() {
 	for {
-		bytesRead, err := proxyServer.tcpConn.Read(buffer)
-
+		_, data, err := p.wsConn.ReadMessage()
 		if err != nil {
-			proxyServer.tcpConn.Close()
-			proxyServer.wsConn.Close()
-
-			tcpConnCounter.Dec()
-			wsConnCounter.Dec()
-
+			p.Teardown()
 			break
 		}
 
-		err = proxyServer.wsConn.WriteMessage(websocket.BinaryMessage, buffer[:bytesRead])
+		_, err = p.tcpConn.Write(data)
 		if err != nil {
-			log.Println("tcpToWebSocket:", err.Error())
+			log.Println("webSocketToTCP:", err.Error())
+
+			p.Dial()
+			p.tcpConn.Write(data)
 		}
 
-		bytesTx.Add(float64(bytesRead))
+		bytesTx.Add(float64(len(data)))
 	}
 }
 
-func (proxyServer *ProxyServer) webSocketToTCP() {
+// ReadTCP reads from the backend TCP connection and
+// writes to the WebSocket.
+func (p *ProxyServer) ReadTCP() {
+	buffer := make([]byte, config.bufferSize)
+
 	for {
-		_, data, err := proxyServer.wsConn.ReadMessage()
+		bytesRead, err := p.tcpConn.Read(buffer)
+
 		if err != nil {
-			proxyServer.wsConn.Close()
-
-			tcpConnCounter.Dec()
-			wsConnCounter.Dec()
-
+			p.Teardown()
 			break
 		}
 
-		_, err = proxyServer.tcpConn.Write(data)
-		if err != nil {
-			log.Println("webSocketToTCP:", err.Error())
-			proxyServer.Dial()
-			proxyServer.tcpConn.Write(data)
+		if err := p.wsConn.WriteMessage(websocket.BinaryMessage, buffer[:bytesRead]); err != nil {
+			log.Println("tcpToWebSocket:", err.Error())
+			break
 		}
 
-		bytesRx.Add(float64(len(data)))
+		bytesRx.Add(float64(bytesRead))
 	}
+}
+
+// Teardown the WebSocket and backend TCP connection.
+func (p *ProxyServer) Teardown() {
+	p.tcpConn.Close()
+	p.wsConn.Close()
+
+	// Decrement Prometheus counters
+	tcpConnCounter.Dec()
+	wsConnCounter.Dec()
 }

@@ -16,12 +16,11 @@ import (
 
 var (
 	upgrader = websocket.Upgrader{
-		ReadBufferSize:  bufferSize,
-		WriteBufferSize: bufferSize,
+		ReadBufferSize:  config.bufferSize,
+		WriteBufferSize: config.bufferSize,
 		CheckOrigin:     authenticateOrigin,
 		Subprotocols:    []string{"binary"},
 	}
-	proxyServer   *ProxyServer
 	ctx, stopHTTP = context.WithCancel(context.Background())
 	server        = &http.Server{}
 )
@@ -35,24 +34,24 @@ func StartHTTP() {
 		prometheus.DefaultGatherer,
 		promhttp.HandlerOpts{},
 	))
-
-	router.HandleFunc(httpPath, webSocketHandler)
+	router.HandleFunc(config.httpPath, webSocketHandler)
 
 	server = &http.Server{
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       5 * time.Second,
 		WriteTimeout:      5 * time.Second,
 		IdleTimeout:       60 * time.Second,
-		Addr:              bindAddr,
+		Addr:              config.bindAddr,
 		Handler:           router,
 	}
 
-	listening := fmt.Sprintf("Listening at address %s", bindAddr)
+	listening := fmt.Sprintf("Listening at address %s", config.bindAddr)
 	log.Println(listening)
 	log.Fatal(server.ListenAndServe())
 
 	if ctx.Err() != nil {
 		log.Fatalln(ctx.Err())
+		return
 	}
 }
 
@@ -65,33 +64,33 @@ func webSocketHandler(w http.ResponseWriter, r *http.Request) {
 	wsConn, err := upgrader.Upgrade(w, r, nil)
 
 	if err != nil {
-		log.Println("Failed to upgrade websocket request: ", err)
+		log.Println("failed to upgrade websocket request: ", err)
 		return
 	}
-
 	wsConnCounter.Inc()
 
-	host, port, err := net.SplitHostPort(remoteAddr)
+	host, port, err := net.SplitHostPort(config.remoteAddr)
 	if err != nil {
-		log.Println("Failed to parse remote address")
+		log.Println("failed to parse remote address")
 		return
 	}
 	addr := fmt.Sprintf("%s:%s", host, port)
 
 	tcpAddr, err := net.ResolveTCPAddr("tcp", addr)
 	if err != nil {
-		message := "Failed to resolve destination: " + err.Error()
+		message := "failed to resolve destination: " + err.Error()
 		log.Println(message)
 		_ = wsConn.WriteMessage(websocket.CloseMessage, []byte(message))
 		return
 	}
 
-	proxyServer = NewWebSocketProxy(wsConn, tcpAddr)
+	var p Proxy = new(ProxyServer)
+	p.Initialize(wsConn, tcpAddr)
 
-	if err := proxyServer.Dial(); err != nil {
+	if err := p.Dial(); err != nil {
 		log.Println(err)
 		return
 	}
 
-	go proxyServer.Start()
+	go p.Start()
 }

@@ -1,4 +1,5 @@
 # Go WebSockify
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 > RFC 6455 compliant TCP to WebSocket proxy.
 
 Go WebSockify is a pure Go implementation of [novnc/websockify](https://github.com/novnc/websockify) TCP to WebSocket proxy with improved connection handling. Runs on Linux, Windows and MacOS.
