@@ -36,10 +36,6 @@ jobs:
         run: |
           make PLATFORM=${{ matrix.platforms }}
 
-      - name: Compress binary with UPX
-        run: |
-          upx --ultra-brute -9 -k ./bin/go-websockify-${{ matrix.platforms }}
-
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
