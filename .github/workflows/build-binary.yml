@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Set date
         run: |
-          echo "NOW::$(date -u +%FT%TZ)" >> $GITHUB_ENV
+          echo "::save-state name=NOW::$(date -u +%FT%TZ)" >> $GITHUB_ENV
           echo $NOW
 
       - uses: actions/setup-go@v2
