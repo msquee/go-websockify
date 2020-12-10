@@ -1,10 +1,10 @@
-version: '3.8'
+version: '3.3'
 
 networks:
   lan:
 
 volumes:
-  data: {}
+  data:
 
 services:
   # Prometheus
@@ -53,8 +53,8 @@ services:
     build: ./client
     command: yarn run dev
     volumes:
-      - ./client:/usr/client/
-      - /usr/client/node_modules
+      - ./client:/opt/frontend/
+      - /opt/frontend/node_modules
     ports:
       - "1234:1234" # Parcel
       - "4321:4321" # HMR

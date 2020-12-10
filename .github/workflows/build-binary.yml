@@ -1,0 +1,46 @@
+name: Build Binary
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platforms: [ 'linux-amd64', 'darwin-amd64', 'linux-arm64' ]
+        go: [ '1.15.5' ]
+        os: [ 'ubuntu-20.04' ]
+
+    name: Build ${{ matrix.platforms }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/go/pkg/mod
+            ~/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Go WebSockify
+        run: |
+          make PLATFORM=${{ matrix.platforms }}
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: go-websockify-${{ matrix.platforms }}
+          path: |
+            ./bin/go-websockify-${{ matrix.platforms }}
