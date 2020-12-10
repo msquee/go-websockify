@@ -10,9 +10,10 @@ jobs:
       matrix:
         platforms: [ 'linux-amd64', 'darwin-amd64', 'linux-arm64' ]
         go: [ '1.15.5' ]
+        os: [ 'ubuntu-20.04' ]
 
     name: Build ${{ matrix.platforms }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/setup-go@v2
