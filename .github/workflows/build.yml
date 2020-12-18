@@ -1,4 +1,4 @@
-name: Build Binary
+name: Build
 
 on:
   pull_request:
@@ -8,9 +8,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platforms: [ 'linux-amd64', 'darwin-amd64', 'linux-arm64' ]
-        go: [ '1.15.5' ]
-        os: [ 'ubuntu-20.04' ]
+        platforms: ["linux-amd64", "darwin-amd64", "linux-arm64"]
+        go: ["1.15.5"]
+        os: ["ubuntu-20.04"]
 
     name: Build ${{ matrix.platforms }}
     runs-on: ${{ matrix.os }}
@@ -21,6 +21,9 @@ jobs:
         with:
           go-version: ${{ matrix.go }}
 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Cache dependencies
         uses: actions/cache@v2
         with:
@@ -30,9 +33,6 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-
-      - name: Checkout code
-        uses: actions/checkout@v2
 
       - name: Build Go WebSockify
         run: |
