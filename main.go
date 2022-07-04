@@ -17,6 +17,11 @@ var config struct {
 	bufferSize int
 	httpPath   string
 
+	// ssl support
+
+	cert string
+	key  string
+
 	runAsDaemon bool
 	showVersion bool
 	echoServer  bool
@@ -34,6 +39,9 @@ func init() {
 	rootCmd.PersistentFlags().IntVar(&config.bufferSize, "buffer", 65536, "buffer size")
 	rootCmd.PersistentFlags().BoolVar(&config.echoServer, "echo", false, "sidecar echo server")
 	rootCmd.PersistentFlags().StringVar(&config.httpPath, "path", "/websockify", "url path clients connect to")
+
+	rootCmd.PersistentFlags().StringVar(&config.cert, "cert", "", "SSL certificate file")
+	rootCmd.PersistentFlags().StringVar(&config.key, "key", "", "SSL key file")
 
 	rootCmd.Flags().BoolVarP(&config.runAsDaemon, "daemon", "D", false, "run as daemon")
 	rootCmd.Flags().BoolVarP(&config.showVersion, "version", "v", false, "print version")

@@ -121,7 +121,7 @@ Go WebSockify exports the following Prometheus metrics at `/metrics`:
 - go_websockify_tcp_connections_active
 
 ## Roadmap
-- [ ] Support TLS on WebSocket connections.
+- [X] Support TLS on WebSocket connections.
 - [ ] Support authenticating WebSocket connections through a plugin system (https://github.com/traefik/yaegi).
 - [ ] Support for proxying UNIX sockets to WebSockets.
 - [ ] Support backend TCP connection reuse.
