@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -25,6 +27,15 @@ var (
 	server        = &http.Server{}
 )
 
+func readFile(path string) []byte {
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Println(err)
+		return nil
+	}
+	return data
+}
+
 // StartHTTP starts the Go WebSockify web server.
 func StartHTTP() {
 	defer stopHTTP()
@@ -45,9 +56,29 @@ func StartHTTP() {
 		Handler:           router,
 	}
 
-	listening := fmt.Sprintf("Listening at address %s", config.bindAddr)
-	log.Println(listening)
-	log.Fatal(server.ListenAndServe())
+	if config.cert != "" && config.key != "" {
+		log.Print("Certificate and key detected, running HTTPS config for WebSocket server")
+		server.TLSConfig = &tls.Config{
+			MaxVersion: tls.VersionTLS12,
+			Certificates: []tls.Certificate{
+				{
+					Certificate: [][]byte{
+						readFile(config.cert),
+					},
+					PrivateKey: readFile(config.key),
+				},
+			},
+		}
+		server.TLSNextProto = make(map[string]func(*http.Server, *tls.Conn, http.Handler))
+		listening := fmt.Sprintf("Listening at address %s", config.bindAddr)
+		log.Println(listening)
+		log.Fatal(server.ListenAndServeTLS(config.cert, config.key))
+
+	} else {
+		listening := fmt.Sprintf("Listening at address %s", config.bindAddr)
+		log.Println(listening)
+		log.Fatal(server.ListenAndServe())
+	}
 
 	if ctx.Err() != nil {
 		log.Fatalln(ctx.Err())
